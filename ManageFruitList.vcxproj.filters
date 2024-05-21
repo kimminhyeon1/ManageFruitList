@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ManageFruitList.c">
+    <ClCompile Include="0521_5701580.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
