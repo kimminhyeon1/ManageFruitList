@@ -12,52 +12,69 @@ typedef struct ListNode {
 ListNode* insert_last(ListNode* head, element data) {
 	ListNode* node = (ListNode*)malloc(sizeof(ListNode));
 	strcpy(node->data, data);
+	node->link = NULL;
 	if (head == NULL) {
-		head = node;
-		node->link = head;
+		return node;
 	}
 	else {
-		node->link = head->link;
-		head->link = node;
-		head = node;
+		ListNode* p = head;
+		while (p->link != NULL) {
+			p = p->link;
+		}
+		p->link = node;
+		return head;
 	}
-	return head;
 }
 
-ListNode* delete(ListNode* head, ListNode* node) {
-	ListNode* removed, * pre;
-	if (head == NULL)return;
-	else if(head == head->link) {
-		removed = head;
-		head = NULL;
+ListNode* search_list(ListNode* head, element x) {
+	ListNode* p = head;
+
+	while (p != NULL) {
+		if (strcmp(p->data, x) == 0) {
+			return p;
+		}
+		p = p->link;
+	}
+	return NULL;
+}
+
+ListNode* delete(ListNode* head, element data) {
+	ListNode* removed = head;
+	ListNode* pre = NULL;
+	while (removed != NULL && strcmp(removed->data, data) != 0) {
+		pre = removed;
+		removed = removed->link;
+	}
+	if (removed == NULL) {
+		return head;
+	}
+	else if (pre == NULL) {
+		head = head->link;
 	}
 	else {
-		pre = node->link;
-		while (pre->link != node) {
-			pre = pre->link;
-		}
-		removed = node;
 		pre->link = removed->link;
-		node = pre;
 	}
 	free(removed);
 	return head;
 }
 void print_list(ListNode* head) {
-	ListNode* p;
-
-}
-ListNode* search_list(ListNode* head, element x) {
 	ListNode* p = head;
-
+	if (p == NULL) {
+		printf("목록이 비어있습니다.");
+	}
 	while (p != NULL) {
-		if (p->data == x) return p;
+		printf("%s ", p->data);
 		p = p->link;
 	}
-	return NULL;
+	printf("\n");
 }
+
 int main() {
 	ListNode* head = NULL;
+	ListNode* DeletedHead = NULL;
+	element data;
+	int choice;
+	
 	head = insert_last(head, "Mango");
 	head = insert_last(head, "Orange");
 	head = insert_last(head, "Apple");
@@ -68,9 +85,7 @@ int main() {
 	head = insert_last(head, "Raspberry");
 	head = insert_last(head, "Banana");
 	head = insert_last(head, "Peach");
-	element data;
-	int choice;
-	ListNode* p;
+	
 
 	while (1) {
 		printf("\n메뉴\n");
@@ -85,22 +100,20 @@ int main() {
 		case 1:
 			printf("추가할 과일 이름을 입력하시오: ");
 			scanf("%s", data);
-			getchar();
 			if (search_list(head, data) != NULL) {
 				printf("리스트에 이미 존재하는 과일입니다.\n");
 			}
 			else {
-				insert_last(head, data);
+				head = insert_last(head, data);
 				printf("리스트에 추가하였습니다.\n");
 			}
 			break;
 		case 2:
 			printf("삭제할 과일 이름을 입력하시오: ");
 			scanf("%s", data);
-			getchar();
-			p = search_list(head, data);
 			if (search_list(head, data) != NULL) {
-				delete(head, p);
+				head = delete(head, data);
+				DeletedHead = insert_last(DeletedHead, data);
 				printf("해당 과일을 삭제하였습니다.\n");
 			}
 			else {
@@ -108,6 +121,8 @@ int main() {
 			}
 			break;
 		case 3:
+			printf("삭제된 과일 목록: ");
+			print_list(DeletedHead);
 			break;
 		case 4:
 			exit(0);
@@ -115,4 +130,5 @@ int main() {
 			printf("잘못된 선택입니다.\n");
 		}
 	}
+	return 0;
 }
